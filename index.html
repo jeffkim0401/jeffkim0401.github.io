@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F1F2ED">
+<title>游杰夫 · 后端开发实习 · 2027 届</title>
+<meta name="description" content="游杰夫的个人简历网站：豫章师范学院软件工程本科，2027 年毕业，求职方向后端开发实习。演出票务微服务订票系统、Android 本地音乐播放器、浩鲸云 Dify 工作流现场适配。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23151819'/%3E%3Ctext x='32' y='46' font-family='Songti SC,SimSun,serif' font-size='38' text-anchor='middle' fill='%23F1F2ED'%3E%E6%B8%B8%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700&amp;display=swap">
+<style>
+/* ===== 设计令牌 ===== */
+:root{
+  --paper:#F1F2ED;
+  --paper-2:#E7E8E1;
+  --ink:#151819;
+  --ink-2:#3C4441;
+  --mut:#66706B;
+  --line:#D2D6CB;
+  --accent:#0B5F45;
+  --display:"Noto Serif SC","Songti SC","SimSun","Noto Serif CJK SC",serif;
+  --sans:"PingFang SC","Microsoft YaHei","Noto Sans SC","Hiragino Sans GB",system-ui,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  --wrap:1160px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+img{max-width:100%}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+h1,h2,h3,p,ul,dl,dd{margin:0}
+ul{list-style:none;padding:0}
+.wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 20px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* 纸张噪点：把纯色背景压成印刷品质感 */
+.grain{
+  position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.045;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* ===== 顶栏 ===== */
+.top{
+  position:sticky;top:0;z-index:30;background:var(--paper);
+  border-bottom:1px solid var(--line);
+}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.mark{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.mark-g{
+  font-family:var(--display);font-weight:700;font-size:22px;line-height:1;
+  color:var(--accent);width:34px;height:34px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:2px;
+}
+.mark-n{display:flex;flex-direction:column;line-height:1.25}
+.mark-name{font-size:14px;font-weight:600;letter-spacing:.03em}
+.mark-x{font-size:11px;font-family:var(--mono);color:var(--mut);letter-spacing:.04em}
+.nav{display:none}
+.nav a{color:var(--ink-2);font-size:14px;margin-left:26px}
+.nav a:hover{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
+.top-pdf{display:none}
+.top-mail{
+  font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:2px;
+  padding:7px 12px;display:inline-flex;align-items:center;min-height:38px;
+}
+
+/* ===== 首屏 ===== */
+.hero{padding:44px 0 40px}
+.kicker{font-size:14px;color:var(--accent);letter-spacing:.02em}
+.name{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(58px,20vw,138px);line-height:.95;
+  letter-spacing:.01em;margin:10px 0 0;
+}
+.lede{
+  font-size:19px;line-height:1.55;color:var(--ink);margin-top:18px;
+  max-width:24ch;text-wrap:balance;
+}
+.sub{
+  margin-top:16px;font-size:15px;line-height:1.8;color:var(--mut);max-width:54ch;
+}
+.meta{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px;
+  margin-top:28px;padding-top:20px;border-top:1px solid var(--line);
+}
+.meta li{display:flex;flex-direction:column;gap:1px;min-width:0}
+.meta-k{font-size:13px;color:var(--mut)}
+.meta-v{font-size:15px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.cm-list{margin-top:22px}
+.cm{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:11px 0;border-bottom:1px solid var(--line);
+}
+.cm-k{font-size:13px;color:var(--mut);width:36px;flex:none}
+.cm-v{
+  font-family:var(--mono);font-size:15px;color:var(--ink);letter-spacing:.01em;
+  min-width:0;word-break:break-all;
+}
+.cy{
+  margin-left:auto;font:inherit;font-size:13px;line-height:1;
+  color:var(--ink-2);background:transparent;border:1px solid var(--line);
+  border-radius:2px;padding:7px 11px;min-height:32px;cursor:pointer;position:relative;
+  transition:background .18s,color .18s,border-color .18s;
+}
+.cy::after{content:"";position:absolute;inset:-6px}
+.cy:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+.portrait{margin:30px 0 0 auto;width:62%;max-width:300px}
+.portrait .frame{background:#FFF;padding:6px;border:1px solid var(--line)}
+.portrait img{
+  display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 16%;
+}
+.portrait figcaption{
+  display:flex;justify-content:space-between;gap:10px;
+  margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--mut);letter-spacing:.04em;
+}
+.vert{display:none}
+
+/* ===== 区块骨架 ===== */
+.sec{padding:52px 0 20px;border-top:1px solid var(--line)}
+.sec-head{
+  display:flex;flex-direction:column;gap:6px;
+  margin-bottom:28px;
+}
+.sec h2{
+  font-family:var(--display);font-weight:700;font-size:26px;line-height:1.3;
+  letter-spacing:.01em;
+}
+.sec-meta{font-size:14px;color:var(--mut)}
+
+/* ===== 项目 ===== */
+.work{padding:0 0 40px}
+.work + .work{border-top:1px solid var(--line);padding-top:36px}
+.work-h{margin-bottom:22px}
+.work h3{
+  font-family:var(--display);font-weight:700;font-size:22px;line-height:1.35;
+}
+.work-line{font-size:14px;color:var(--mut);margin-top:6px}
+.steps{display:block}
+.step{
+  display:block;
+  padding:13px 0;border-bottom:1px solid var(--line);
+}
+.step:last-child{border-bottom:none;padding-bottom:2px}
+.step dt{font-size:13.5px;color:var(--accent);line-height:1.7;margin-bottom:2px}
+.step dd{font-size:15px;line-height:1.78;color:var(--ink-2)}
+.stack{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.stack li{
+  font-family:var(--mono);font-size:12px;line-height:1;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:2px;padding:6px 8px;background:var(--paper);
+}
+.fig{margin-top:24px}
+.pipe{border:1px solid var(--line);border-radius:2px;padding:18px 16px;background:rgba(255,255,255,.35)}
+.pnode{display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px;align-items:start}
+.pn-i{font-family:var(--mono);font-size:12px;color:var(--accent);line-height:1.6}
+.pn-t{font-size:14px;font-weight:600;color:var(--ink);line-height:1.6}
+.pn-d{font-size:13.5px;color:var(--mut);line-height:1.65;margin-top:1px}
+.pjoin{display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px;align-items:center;height:34px}
+.pjoin i{
+  justify-self:center;width:1px;height:100%;
+  background-image:repeating-linear-gradient(to bottom,var(--line) 0 4px,transparent 4px 7px);
+}
+.pjoin span{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.02em}
+.fig-note{margin-top:12px;font-size:13.5px;line-height:1.7;color:var(--mut)}
+
+/* ===== 时间轴 ===== */
+.tl{display:block;border-left:1px solid var(--line);padding-left:22px}
+.tl-dot{display:none}
+.tl-time{
+  font-family:var(--mono);font-size:12.5px;color:var(--mut);letter-spacing:.02em;
+  margin-bottom:6px;
+}
+.tl-body{position:relative;padding-bottom:36px}
+.tl-body:last-child{padding-bottom:0}
+.tl-body::before{
+  content:"";position:absolute;left:-27px;top:5px;width:9px;height:9px;
+  border-radius:50%;border:1.5px solid var(--accent);background:var(--paper);
+}
+.tl h3{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.45}
+.tl-role{font-family:var(--sans);font-weight:400;font-size:14px;color:var(--mut);margin-left:8px;white-space:nowrap}
+.tl-note{margin-top:6px;font-size:14.5px;color:var(--mut);line-height:1.75}
+.tl-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.tl-list li{
+  font-size:14.5px;line-height:1.78;color:var(--ink-2);
+  padding-left:15px;position:relative;
+}
+.tl-list li::before{
+  content:"";position:absolute;left:0;top:.72em;width:5px;height:1px;background:var(--mut);
+}
+.tl-list b{font-weight:600;color:var(--ink)}
+
+/* ===== 技术栈 ===== */
+.tech{display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+.tech-g{display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.tech-g:first-child{border-top:none;padding-top:0}
+.tech-g h3{font-size:15px;font-weight:600;letter-spacing:.01em}
+.tech-g .stack{margin-top:0}
+.tech-use{font-size:13.5px;color:var(--mut);line-height:1.7}
+
+/* ===== 页脚 ===== */
+.foot{background:var(--ink);color:var(--paper);margin-top:56px;padding:44px 0 32px}
+.foot h2{
+  font-family:var(--display);font-weight:700;font-size:26px;line-height:1.4;
+}
+.foot p{font-size:14.5px;line-height:1.8;color:#B9BFB8;margin-top:14px;max-width:44ch}
+.foot-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.fbtn{
+  display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:10px 16px;
+  font:inherit;font-size:14px;color:var(--paper);background:transparent;
+  border:1px solid rgba(241,242,237,.35);border-radius:2px;cursor:pointer;
+  transition:background .18s,color .18s,border-color .18s;
+}
+.fbtn svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6}
+.fbtn:hover{background:var(--paper);color:var(--ink);border-color:var(--paper);text-decoration:none}
+.foot-side{
+  margin-top:34px;padding-top:22px;border-top:1px solid rgba(241,242,237,.16);
+  display:flex;flex-direction:column;gap:8px;
+}
+.foot-side a{color:var(--paper);font-family:var(--mono);font-size:15px}
+.foot-side span{font-size:14px;color:#B9BFB8}
+.foot-note{margin-top:26px;font-size:12px;font-family:var(--mono);color:#8C948D;letter-spacing:.02em}
+
+/* ===== 提示条 ===== */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  z-index:60;padding:11px 18px;border-radius:2px;
+  background:var(--ink);color:var(--paper);font-size:14px;
+  opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===== 入场：一次性编排，不做逐块淡入 ===== */
+@media (prefers-reduced-motion:no-preference){
+  .hero-txt > *{opacity:0;animation:rise .78s cubic-bezier(.22,1,.36,1) forwards}
+  .hero-txt > *:nth-child(1){animation-delay:.04s}
+  .hero-txt > *:nth-child(2){animation-delay:.10s;animation-duration:1.05s}
+  .hero-txt > *:nth-child(3){animation-delay:.20s}
+  .hero-txt > *:nth-child(4){animation-delay:.28s}
+  .hero-txt > *:nth-child(5){animation-delay:.36s}
+  .hero-txt > *:nth-child(6){animation-delay:.44s}
+  .portrait{opacity:0;animation:rise .9s cubic-bezier(.22,1,.36,1) .30s forwards}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){
+  .portrait{opacity:1}
+}
+
+/* ===== 断点：平板 / 桌面 ===== */
+@media (min-width:768px){
+  .wrap{padding:0 32px}
+  .nav{display:flex;align-items:center}
+  .top-mail{display:none}
+  .top-pdf{
+    display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);
+    margin-left:26px;border-bottom:1px solid var(--line);padding-bottom:2px;
+  }
+  .top-pdf:hover{text-decoration:none;border-bottom-color:var(--ink)}
+  .hero{
+    display:grid;grid-template-columns:minmax(0,1fr) 300px;
+    gap:48px;align-items:start;padding:72px 0 64px;
+  }
+  .hero-txt{order:1}
+  .portrait{order:2;width:100%;max-width:none;margin:2px 0 0}
+  .vert{
+    display:block;position:absolute;right:-30px;top:0;
+    writing-mode:vertical-rl;font-family:var(--sans);font-size:11.5px;
+    color:var(--mut);letter-spacing:.14em;
+  }
+  .portrait{position:relative}
+  .lede{font-size:23px;max-width:26ch;margin-top:22px}
+  .sub{font-size:15.5px;max-width:50ch}
+  .meta{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:34px;padding-top:22px}
+  .cm{max-width:430px}
+  .sec{padding:76px 0 28px}
+  .sec-head{flex-direction:row;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:36px}
+  .sec h2{font-size:30px}
+  .work-h{margin-bottom:26px}
+  .work h3{font-size:25px}
+  .work-g{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:44px;align-items:start}
+  .work-g:only-child{display:block}
+  .step{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;padding:15px 0}
+  .step dt{margin-bottom:0}
+  .fig{margin-top:0}
+  .tl{
+    display:grid;grid-template-columns:104px 1px minmax(0,1fr);
+    column-gap:26px;border-left:none;padding-left:0;
+    background-image:linear-gradient(var(--line),var(--line));
+    background-size:1px 100%;background-position:130px 0;background-repeat:no-repeat;
+  }
+  .tl-time{grid-column:1;text-align:right;margin:3px 0 0;padding-top:0}
+  .tl-body{grid-column:3;padding-bottom:46px}
+  .tl-body::before{display:none}
+  .tl-dot{
+    display:block;grid-column:2;justify-self:center;align-self:start;
+    width:9px;height:9px;margin-top:6px;border-radius:50%;
+    border:1.5px solid var(--accent);background:var(--paper);
+  }
+  .tech{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 44px}
+  .foot{padding:64px 0 40px}
+  .foot-in{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:48px;align-items:start}
+  .foot h2{font-size:32px}
+  .foot-side{margin-top:0;padding-top:0;border-top:none;align-self:start}
+  .foot-note{margin-top:44px}
+}
+@media (min-width:1080px){
+  .hero{grid-template-columns:minmax(0,1fr) 326px;gap:64px}
+  .tech{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+
+/* ===== 打印 ===== */
+@media print{
+  .grain,.top,.cy,.foot-acts,.toast{display:none}
+  body{background:#FFF;color:#000;font-size:11pt}
+  .foot{background:#FFF;color:#000;margin-top:24px;padding:0}
+  .foot h2,.foot p,.foot-side a,.foot-side span{color:#000}
+  .sec{padding:20px 0;break-inside:avoid}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="mark" href="#top">
+      <span class="mark-g" aria-hidden="true">游</span>
+      <span class="mark-n">
+        <span class="mark-name">游杰夫</span>
+        <span class="mark-x">后端开发 · 2027 届</span>
+      </span>
+    </a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#work">项目</a>
+      <a href="#path">经历</a>
+      <a href="#stack">技术栈</a>
+      <a href="#contact">联系</a>
+      <a class="top-pdf" href="assets/resume.pdf" download>PDF 简历</a>
+    </nav>
+    <a class="top-mail" href="mailto:1729455528@qq.com">邮件联系</a>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ===== 首屏：身份与定位 ===== -->
+  <section class="hero wrap">
+    <div class="hero-txt">
+      <p class="kicker">求职方向：后端开发实习</p>
+      <h1 class="name">游杰夫</h1>
+      <p class="lede">把「高并发下座位不能被重复卖出」拆成一条能验证的下单链路。</p>
+      <p class="sub">软件工程本科在读，2027 年 7 月毕业。做过一套演出票务微服务系统、一个 Android 本地音乐播放器，也在浩鲸云的现场项目里把 Dify 工作流跑进真实业务。前端页面习惯先用 Figma 出稿，再用 Cursor / Trae 写成能跑的代码。</p>
+      <ul class="meta">
+        <li><span class="meta-k">年龄</span><span class="meta-v">22 岁</span></li>
+        <li><span class="meta-k">所在地</span><span class="meta-v">江西 · 南昌</span></li>
+        <li><span class="meta-k">政治面貌</span><span class="meta-v">共青团员</span></li>
+        <li><span class="meta-k">毕业时间</span><span class="meta-v">2027 年 7 月</span></li>
+      </ul>
+      <div class="cm-list">
+        <div class="cm">
+          <span class="cm-k">邮箱</span>
+          <a class="cm-v" href="mailto:1729455528@qq.com">1729455528@qq.com</a>
+          <button type="button" class="cy" data-copy="1729455528@qq.com" data-label="邮箱">复制</button>
+        </div>
+      </div>
+    </div>
+    <figure class="portrait">
+      <div class="frame">
+        <img src="assets/portrait.jpg" alt="游杰夫本人照片" width="295" height="413">
+      </div>
+      <figcaption>
+        <span>南昌 · 2026</span>
+        <span>个人简历</span>
+      </figcaption>
+      <span class="vert" aria-hidden="true">南昌 · 二〇二六</span>
+    </figure>
+  </section>
+
+  <!-- ===== 项目 ===== -->
+  <section id="work" class="sec wrap">
+    <div class="sec-head">
+      <h2>精选项目</h2>
+      <p class="sec-meta">两个从设计走到可运行的系统，各有一个真正的难点</p>
+    </div>
+
+    <article class="work">
+      <header class="work-h">
+        <h3>在线订票系统</h3>
+        <p class="work-line">演出票务 · 微服务架构 · 选座下单 / 支付回调 / 订单查询</p>
+      </header>
+      <div class="work-g">
+        <dl class="steps">
+          <div class="step">
+            <dt>要解决的问题</dt>
+            <dd>高峰期大量请求同时涌入选座下单，最直接的后果是座位超卖，以及同一个人重复提交出多张订单。</dd>
+          </div>
+          <div class="step">
+            <dt>库存这一层</dt>
+            <dd>用 Redis + Lua 脚本把库存校验和预扣减合成一次原子操作，再叠一层 Redisson 分布式锁拦住同一用户的重复提交，座位不会被重复售出。</dd>
+          </div>
+          <div class="step">
+            <dt>下单这一层</dt>
+            <dd>预扣减完成后接口直接返回，订单落库交给 Kafka 消费者异步完成，接口层只负责库存校验与扣减。</dd>
+          </div>
+          <div class="step">
+            <dt>这样换来了</dt>
+            <dd>接口响应不再被写库拖住；代价是订单的最终一致要由消费端保证，幂等与补偿得显式设计。</dd>
+          </div>
+        </dl>
+        <div class="fig">
+          <div class="pipe" role="group" aria-label="下单链路示意">
+            <div class="pnode">
+              <span class="pn-i">01</span>
+              <div>
+                <p class="pn-t">接口层</p>
+                <p class="pn-d">接单后先校验库存并预扣减，扣到就返回</p>
+              </div>
+            </div>
+            <div class="pjoin"><i aria-hidden="true"></i><span>扣减成功</span></div>
+            <div class="pnode">
+              <span class="pn-i">02</span>
+              <div>
+                <p class="pn-t">Redis + Lua / Redisson</p>
+                <p class="pn-d">原子校验与扣减；同一用户的重复提交被锁在入口</p>
+              </div>
+            </div>
+            <div class="pjoin"><i aria-hidden="true"></i><span>写入消息</span></div>
+            <div class="pnode">
+              <span class="pn-i">03</span>
+              <div>
+                <p class="pn-t">Kafka → MySQL</p>
+                <p class="pn-d">消费者异步落库，订单按分片存储</p>
+              </div>
+            </div>
+          </div>
+          <p class="fig-note">接口层不等待订单写库，落库压力被 Kafka 摊到消费端——这是这套系统最关键的一次取舍。</p>
+        </div>
+      </div>
+      <ul class="stack">
+        <li>Spring Cloud</li><li>Spring Boot</li><li>Redis</li><li>Kafka</li>
+        <li>Redisson</li><li>MySQL</li><li>ShardingSphere</li><li>Docker</li>
+      </ul>
+    </article>
+
+    <article class="work">
+      <header class="work-h">
+        <h3>安卓本地音乐播放器</h3>
+        <p class="work-line">Kotlin · Jetpack Compose · SD 卡扫描 / 后台播放 / 通知栏控制 / 歌词同步</p>
+      </header>
+      <div class="work-g">
+        <dl class="steps">
+          <div class="step">
+            <dt>要解决的问题</dt>
+            <dd>播放器最容易散掉的地方是播放状态：界面、后台服务、通知栏各持一份，一暂停就对不上。本地文件来源还很杂，标签和歌词的编码并不统一。</dd>
+          </div>
+          <div class="step">
+            <dt>播放链路</dt>
+            <dd>用 Service + MediaSession 重构整条链路，把播放状态收在一处，界面只做订阅，通知栏与 App 内控制状态实时同步。</div>
+          </div>
+          <div class="step">
+            <dt>解析这一层</dt>
+            <dd>用协程把音频元数据解析与封面解码挪到 IO 线程；自己写了 ID3v2（v2.2 / v2.3 / v2.4）标签解析和 LRC 歌词解析，兼容 UTF-8 / UTF-16 / GBK，并处理了歌词时间轴的对齐。</dd>
+          </div>
+          <div class="step">
+            <dt>这样换来了</dt>
+            <dd>播放状态只有一份来源，控制不会错位；列表滑动不再被解析阻塞，编码不标准的文件也能对上歌词。</dd>
+          </div>
+        </dl>
+        <div class="fig">
+          <div class="pipe" role="group" aria-label="播放链路示意">
+            <div class="pnode">
+              <span class="pn-i">01</span>
+              <div>
+                <p class="pn-t">Compose UI</p>
+                <p class="pn-d">列表、播放页、歌词视图，只做订阅与发命令</p>
+              </div>
+            </div>
+            <div class="pjoin"><i aria-hidden="true"></i><span>订阅状态 / 发送控制</span></div>
+            <div class="pnode">
+              <span class="pn-i">02</span>
+              <div>
+                <p class="pn-t">Service + MediaSession</p>
+                <p class="pn-d">播放状态收口在一处，前后台都读它</p>
+              </div>
+            </div>
+            <div class="pjoin"><i aria-hidden="true"></i><span>驱动播放</span></div>
+            <div class="pnode">
+              <span class="pn-i">03</span>
+              <div>
+                <p class="pn-t">ExoPlayer + 通知栏</p>
+                <p class="pn-d">实际播放与系统级控制</p>
+              </div>
+            </div>
+          </div>
+          <p class="fig-note">ID3v2 与 LRC 的解析全部下沉到 IO 线程，解析失败或编码异常都不该挡住播放。</p>
+        </div>
+      </div>
+      <ul class="stack">
+        <li>Kotlin</li><li>Jetpack Compose</li><li>Coroutines</li><li>MediaSession</li><li>ExoPlayer</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ===== 经历与教育 ===== -->
+  <section id="path" class="sec wrap">
+    <div class="sec-head">
+      <h2>经历与教育</h2>
+      <p class="sec-meta">从课堂做到真实业务现场</p>
+    </div>
+    <div class="tl">
+      <p class="tl-time">2026.03 — 2026.09</p>
+      <span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-body">
+        <h3>浩鲸云计算科技股份有限公司<span class="tl-role">实习生</span></h3>
+        <p class="tl-note">在产品线已搭好的 Dify 工作流上做现场适配，并负责测试环境部署与跨部门排障。</p>
+        <ul class="tl-list">
+          <li><b>Webhook 事件响应机器人</b>：各现场的回调协议并不一致，对原始 JSON 做清洗、字段映射与结构重组，让下游机器人能准确解析并触发业务指令。</li>
+          <li><b>卡单智能分析工作流</b>：从现场痛点里提取订单异常特征，改造上游传入的订单数据格式，调整条件分支的判定逻辑与 LLM 节点的输入参数，让卡单原因分析更贴合现场实际，运维能更快定位问题。</li>
+          <li><b>测试环境与联调</b>：用 Docker 把相关服务部署到测试环境，用 Nacos 完成基础路由配置；现场环境不统一导致 JSON 解析失败时，主动与产品线研发对齐接口规范，跟进并解决了多个兼容性 Bug。</li>
+        </ul>
+        <ul class="stack">
+          <li>Docker</li><li>Nacos</li><li>Dify（企业定制版）</li><li>Webhook</li><li>JSON 数据处理</li><li>RESTful API</li>
+        </ul>
+      </div>
+
+      <p class="tl-time">2023.09 — 2027.07</p>
+      <span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-body">
+        <h3>豫章师范学院<span class="tl-role">本科 · 软件工程</span></h3>
+        <p class="tl-note">在校方向一直落在工程实现上：服务端做分布式下单，端侧做播放器。上面两个项目就是这两条线的产物。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 技术栈 ===== -->
+  <section id="stack" class="sec wrap">
+    <div class="sec-head">
+      <h2>技术栈</h2>
+      <p class="sec-meta">按用过的场景分组，不用星级给别人替我打分</p>
+    </div>
+    <ul class="tech">
+      <li class="tech-g">
+        <h3>后端开发</h3>
+        <ul class="stack"><li>Spring Boot</li><li>Spring Cloud</li><li>RESTful API</li></ul>
+        <p class="tech-use">票务系统的服务拆分、下单与支付回调接口。</p>
+      </li>
+      <li class="tech-g">
+        <h3>中间件与存储</h3>
+        <ul class="stack"><li>Redis</li><li>Lua 脚本</li><li>Redisson</li><li>Kafka</li><li>MySQL</li><li>ShardingSphere</li></ul>
+        <p class="tech-use">库存原子预扣、重复提交拦截、订单异步落库与分片。</p>
+      </li>
+      <li class="tech-g">
+        <h3>部署与治理</h3>
+        <ul class="stack"><li>Docker</li><li>Nacos</li></ul>
+        <p class="tech-use">测试环境部署、基础路由配置。</p>
+      </li>
+      <li class="tech-g">
+        <h3>AI 工作流</h3>
+        <ul class="stack"><li>Dify（企业定制版）</li><li>Webhook</li><li>JSON 数据处理</li></ul>
+        <p class="tech-use">现场业务适配与上游数据改造。</p>
+      </li>
+      <li class="tech-g">
+        <h3>移动端</h3>
+        <ul class="stack"><li>Kotlin</li><li>Jetpack Compose</li><li>Coroutines</li><li>MediaSession</li><li>ExoPlayer</li></ul>
+        <p class="tech-use">播放器界面、后台播放与歌词解析。</p>
+      </li>
+      <li class="tech-g">
+        <h3>前端与设计</h3>
+        <ul class="stack"><li>Figma</li><li>Cursor</li><li>Trae</li></ul>
+        <p class="tech-use">用 Figma 出界面稿，再用 Cursor / Trae 把稿子写成能跑的页面。</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== 页脚 ===== -->
+</main>
+  <footer class="foot" id="contact">
+    <div class="wrap foot-in">
+      <div>
+        <h2>在找 2027 届的后端实习生吗</h2>
+        <p>我的主方向是后端，能讲清楚每个设计为什么这么定、代价落在哪儿；前端页面也能自己出稿、自己写。上面的两个项目和一段实习都可以继续展开，也欢迎来信细聊。</p>
+        <div class="foot-acts">
+          <button type="button" class="fbtn" data-copy="1729455528@qq.com" data-label="邮箱">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.6 6.4 12 12.6l8.4-6.2"/></svg>
+            复制邮箱
+          </button>
+          <a class="fbtn" href="assets/resume.pdf" download>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="M7.6 11.4 12 15.8 16.4 11.4"/><path d="M5 19.5h14"/></svg>
+            下载 PDF 简历
+          </a>
+        </div>
+      </div>
+      <div class="foot-side">
+        <a href="mailto:1729455528@qq.com">1729455528@qq.com</a>
+        <span>江西 · 南昌</span>
+        <span>豫章师范学院 · 软件工程</span>
+      </div>
+    </div>
+    <div class="wrap"><p class="foot-note">内容整理自本人 2026 年 11 月版简历</p></div>
+  </footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  var toastEl = document.getElementById('toast');
+  var timer = null;
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    if (timer) { clearTimeout(timer); }
+    timer = setTimeout(function () { toastEl.classList.remove('on'); }, 2200);
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1200px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function copyText(text, label) {
+    var done = function (ok) {
+      toast(ok ? '已复制' + label + '：' + text : '复制失败，请手动选中后复制');
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(legacyCopy(text)); });
+      return;
+    }
+    done(legacyCopy(text));
+  }
+
+  var buttons = document.querySelectorAll('[data-copy]');
+  Array.prototype.forEach.call(buttons, function (btn) {
+    btn.addEventListener('click', function () {
+      copyText(btn.getAttribute('data-copy'), btn.getAttribute('data-label') || '');
+    });
+  });
+})();
+</script>
+</body>
+</html>
